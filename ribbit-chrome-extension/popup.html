@@ -1,0 +1,129 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="css/zk.css" />
+        <!--script src="js/ribbit.1.5.4.1.js"></script-->
+        <script type="text/javascript" src="js/zk-all.js" charset="UTF-8"></script>
+        <script type="text/javascript" src="js/zuml.js" charset="UTF-8"></script>
+        <script type="text/javascript" src="js/lang.js" charset="UTF-8"></script>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    </head>
+    <body>
+        <div id="main">
+            <!--
+            <groupbox id="sendTxtBox" mold="3d" width="300px" open="false">
+                <caption label="Send a Text Message"/>
+                <div>
+                    Phone Number: 
+                    <div><textbox id="recvrPhone" /></div>
+                </div>
+                <div>
+                    Message:
+                    <div><textbox id="message" multiline="true" width="200px" height="100px"/></div>
+                </div>
+                <div>
+                    <button label="Send Message" onClick="sendMessage(recvrPhone)"/>
+                </div>
+            </groupbox>
+            <groupbox mold="3d" width="300px" open="false">
+                <caption label="Make a Call"/>
+                <div>
+                    Phone Number:
+                    <div>
+                        <textbox id="phone" col="15" /><button label="Call" onClick="call(phone, phone.value)"/>
+                    </div>
+                    
+                </div>
+            </groupbox>
+            <groupbox mold="3d" width="300px">
+                <caption label="Listen to Voicemails"/>
+                <div id="msgs"></div>
+            </groupbox>            
+            -->
+        </div>
+        <div id="result"></div>
+        <script>
+            google.load("jquery", "1");
+           
+            zk.zuml.Parser.createAt('#main');
+            
+            var Ribbit = chrome.extension.getBackgroundPage().Ribbit;
+            
+            function sendMessage(receiver) {
+                    console.log("Phone Number:"+receiver.value);
+                    console.log("Message:"+message);
+                    var recipients = ['tel:'+receiver.value];
+                    var message = $("#message").html();
+                    $("#result").html("Sending message...");
+                    Ribbit.Messages().createMessage(sendMessageCallback, recipients, message, null, "Text Message");
+            }
+            
+            function getMessages() {
+                
+                Ribbit.Messages().getMessages(getReceivedMessagesCallback);
+            }
+            
+            getMessages();
+            
+            function getReceivedMessagesCallback(result){
+                if (result.hasError){
+                   console.log(result.message);
+                }
+                else{
+                    console.log("Hi");
+                    var s = ''
+                    var messages = result;
+                    
+                    if (messages.length !=0){
+                        for (var i=0; i<messages.length;i++){
+                            message = messages[i];
+                            //console.log(s +"<br/>id= " + message.id + ", time= " + message.time + ", body= " + message.body);
+                           if (message.mediaUri != null) {
+                                var url = Ribbit.getStreamableUrl(message.mediaUri);
+                                var r = $("#msgs").html();
+                                $("#msgs").html(r+ "<audio src=\""+url+"\" controls=\"controls\"></audio> <br/>");
+                            }
+                            console.log(url);
+                        }
+                    }
+                    else{
+                        s = "There are no received messages";
+                    }
+                }
+            }
+            
+            function sendMessageCallback(result){
+                if (result.hasError){
+                    $("#result").html(result.message);
+                } else {
+                    $("#result").html("Message sent.");
+                }
+                 setTimeout(function() {
+                    $("#result").html("");
+                }, 1500);
+            }
+            
+            function call(textbox) {
+                var phonenums = new Array();
+                var myPhoneNumber = localStorage["phone"];
+                var number = "tel:"+textbox.value;
+                
+                phonenums.push("tel:"+myPhoneNumber);
+                phonenums.push(number);
+                Ribbit.Calls().createCall(createCallCallback, phonenums, null, null);
+            }
+            
+            function createCallCallback(result){
+                if (result.hasError){
+                    $("#result").html(result.message);
+                }
+                else {
+                    localStorage["message"] = message;
+                    $("#result").html("Calling you...");
+                     setTimeout(function() {
+                        $("#result").html("");
+                    }, 10000);
+                }
+            }
+        </script>
+    </body>
+</html>

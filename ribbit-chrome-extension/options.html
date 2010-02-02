@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>Options for Ribbit Chrome Extension</title>
+    
+    <script type="text/javascript">
+    // Save options to localStorage
+    function save_options() {
+        var token = document.getElementById("token");
+        var appId = document.getElementById("appId");
+        var username = document.getElementById("username");
+        var pwd = document.getElementById("password");
+        var phone = document.getElementById("phone");
+
+        localStorage["token"] = token.value;
+        localStorage["appId"] = appId.value;
+        localStorage["phone"] = phone.value;
+        localStorage["username"] = username.value;
+        localStorage["password"] = pwd.value;
+        
+        // Update status to notify user.
+        var status = document.getElementById("status");
+        status.innerHTML = "Options saved."
+        setTimeout(function() {
+            status.innerHTML = "";
+        }, 750);
+        
+        console.log("Options saved to localStorage.");
+    }
+    
+    function restore_options() {
+        var token = localStorage["token"];
+        if (token == "") {
+            return;
+        }
+        var appId = localStorage["appId"];
+        var phoneNumber = localStorage["phone"];
+        var username = localStorage["username"];
+        var password = localStorage["password"];
+        
+        var tokenId = document.getElementById("token");
+        var app = document.getElementById("appId");
+        var phone = document.getElementById("phone");
+        var user = document.getElementById("username");
+        var pwd = document.getElementById("password");
+        
+        tokenId.value = token;
+        app.value = appId;
+        phone.value = phoneNumber;
+        user.value = username;
+        pwd.value = password;
+        
+        console.log("Restoring options from localStorage.");
+    }
+    </script>
+    </head>
+    <body onload="restore_options()">
+        Token: 
+        <input type="text" id="token" /><br/>
+        App Id:   
+        <input type="test" id="appId" /><br/>
+        Username:   
+        <input type="test" id="username" /><br/>
+        Password:   
+        <input type="password" id="password" /><br/>
+        My Number:
+        <input type="text" id="phone" /><br/>
+        <br/>
+        <button onclick="save_options()">Save</button><br/>
+        <div id="status"></div>
+    </body>
+</html>

@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <script src="js/ribbit.1.5.4.js"></script>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    </head>
+    <body>
+        <script>
+        function init() {
+            var token = localStorage["token"];
+            var appId = localStorage["appId"];
+            var username = localStorage["username"];
+            var password = localStorage["password"];
+            
+            if (token != "") {
+                Ribbit.init(token, appId);
+                Ribbit.Login(loginCallback, username, password);
+                console.log("Attempting login with stored credentials.");  
+            }
+            
+            console.log("Attempting login");                
+        }
+            
+        // General Callbacks
+        function loginCallback(result){
+            if (result.hasError) {
+                console.log(result.message);
+            } else {
+                console.log("Logged in");
+            }
+            
+        }
+
+        init();
+        
+        chrome.extension.onRequest.addListener(function(data, sender, sendResponse) {
+            switch (data[0]) {
+                case "call":
+                    call(data[1]);
+                    break;
+            }
+        });
+        </script>
+    </body>
+</html>

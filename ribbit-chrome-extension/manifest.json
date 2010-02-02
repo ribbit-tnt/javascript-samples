@@ -1,0 +1,24 @@
+{
+	"name": "Lilypad for Google Chrome",
+	"version": "1.0",
+	"description": "Enables the use of Ribbit VOIP and SMS services.",
+	"icons": { 
+		"32" : "images/ribbitR_32x32.png",
+		"128": "images/ribbitR_128x128.png" 
+	},
+	"permissions": [],
+    "background_page":"bg.html",
+	"browser_action": {
+		"default_title": "Ribbit Lilypad",
+		"default_icon": "images/ribbitR_19x19.png",
+		"popup": "popup.html"
+	},
+    "content_scripts": [
+        {
+            "matches": ["http://*/*", "file://*/*"],
+            "js":["js/ribbit-ff-parsing.js"]
+        
+        }
+    ],
+	"options_page": "options.html"
+}
