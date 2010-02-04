@@ -32,6 +32,25 @@
 
         init();
         
+        function call(num) {
+            var phonenums = new Array();
+            var myPhoneNumber = localStorage["phone"];
+            var number = "tel:"+num;
+            
+            phonenums.push("tel:"+myPhoneNumber);
+            phonenums.push(number);
+            Ribbit.Calls().createCall(createCallCallback, phonenums, null, null);
+        }
+        
+        function createCallCallback(result){
+            if (result.hasError){
+               alert(result.message);
+            }
+            else {
+                alert("Calling you");
+            }
+        }
+        
         chrome.extension.onRequest.addListener(function(data, sender, sendResponse) {
             switch (data[0]) {
                 case "call":
